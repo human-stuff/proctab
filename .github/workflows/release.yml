@@ -62,3 +62,71 @@ jobs:
           build-args: VERSION=${{ github.ref_name }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  pages:
+    name: apt repo + pip index (GitHub Pages)
+    needs: goreleaser
+    # pre-releases (v1.2.0-rc1) don't replace what apt/pip users get
+    if: ${{ !contains(github.ref_name, '-') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # attach wheels to the release
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "$GITHUB_REF_NAME" -D dist -p '*.deb' -p '*.tar.gz'
+      - name: import APT signing key
+        env:
+          KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::APT_GPG_PRIVATE_KEY secret is missing. Run packaging/setup-signing-key.sh once."
+            exit 1
+          fi
+          echo "$KEY" | gpg --batch --import
+          echo "GPG_KEY_ID=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr/{print $10; exit}')" >> "$GITHUB_ENV"
+      - name: build wheels
+        run: python3 packaging/build_wheels.py --version "$GITHUB_REF_NAME" --dist dist --out wheels
+      - name: attach wheels to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" wheels/*.whl --clobber
+      - name: build site
+        env:
+          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: bash packaging/build_site.sh dist wheels site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels
+          path: wheels/*.whl
+
+  pypi:
+    name: publish to PyPI (optional)
+    needs: pages
+    # Enable after configuring a trusted publisher on pypi.org, then set the
+    # repository variable PUBLISH_PYPI=true (Settings > Secrets and variables > Actions > Variables).
+    if: ${{ vars.PUBLISH_PYPI == 'true' }}
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: wheels
+          path: wheels
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: wheels
