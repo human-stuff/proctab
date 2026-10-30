@@ -1,0 +1,56 @@
+# GoReleaser v2 config. Run by .github/workflows/release.yml on tag push.
+# Local dry run:  goreleaser release --snapshot --clean
+version: 2
+project_name: proctab
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: proctab
+    main: ./cmd/proctab
+    binary: proctab
+    env: [CGO_ENABLED=0]
+    goos: [linux]
+    goarch: [amd64, arm64, arm, "386", riscv64, ppc64le, s390x, loong64]
+    goarm: ["6", "7"]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}
+    files: [LICENSE, README.md]
+
+nfpms:
+  - package_name: proctab
+    file_name_template: "{{ .ConventionalFileName }}"
+    description: Lightweight htop-style terminal monitor for processes, ports, docker and system info
+    maintainer: proctab maintainers <proctab@users.noreply.github.com>
+    license: MIT
+    section: utils
+    formats: [deb, rpm, apk, archlinux]
+    contents:
+      - src: LICENSE
+        dst: /usr/share/licenses/proctab/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/proctab/README.md
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude: ["^docs:", "^test:", "^ci:", "^chore:"]
+
+release:
+  prerelease: auto
