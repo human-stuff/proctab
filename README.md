@@ -72,10 +72,32 @@ to see:
 ## Install
 
 Every tagged release on GitHub has static binaries for linux amd64, arm64,
-armv6, armv7, 386, riscv64, ppc64le, s390x and loong64, plus packages.
+armv7, 386, riscv64, ppc64le, s390x and loong64, plus packages.
+
+**apt (Debian / Ubuntu):**
 
 ```sh
-# Debian / Ubuntu
+sudo mkdir -p /etc/apt/keyrings
+sudo curl -fsSL https://human-stuff.github.io/proctab/proctab.asc -o /etc/apt/keyrings/proctab.asc
+echo "deb [signed-by=/etc/apt/keyrings/proctab.asc] https://human-stuff.github.io/proctab/apt stable main" \
+  | sudo tee /etc/apt/sources.list.d/proctab.list
+sudo apt update && sudo apt install proctab
+```
+
+`apt upgrade` then picks up new releases.
+
+**pip / pipx** (the wheel contains the static binary, no Python code runs):
+
+```sh
+pipx install proctab --index-url https://human-stuff.github.io/proctab/simple/
+# or
+pip install proctab --index-url https://human-stuff.github.io/proctab/simple/
+```
+
+**Other options:**
+
+```sh
+# Debian / Ubuntu, single file
 sudo apt install ./proctab_<version>_amd64.deb
 # Fedora / RHEL / openSUSE
 sudo rpm -i proctab-<version>.x86_64.rpm
@@ -87,7 +109,7 @@ sudo pacman -U proctab-<version>-1-x86_64.pkg.tar.zst
 tar xzf proctab_<version>_linux_amd64.tar.gz && sudo install proctab /usr/local/bin/
 
 # With Go
-go install github.com/<you>/proctab/cmd/proctab@latest
+go install github.com/human-stuff/proctab/cmd/proctab@latest
 
 # From source
 make build && sudo make install
@@ -98,7 +120,7 @@ As a container, it needs the host's PID and network namespaces:
 ```sh
 docker run --rm -it --pid=host --net=host --cap-add SYS_PTRACE \
   -v /var/run/docker.sock:/var/run/docker.sock -v /etc/passwd:/etc/passwd:ro \
-  ghcr.io/<you>/proctab
+  ghcr.io/human-stuff/proctab
 ```
 
 Linux only for now; it needs `/proc`.
@@ -173,7 +195,17 @@ GitHub Actions (`.github/workflows/`):
 | Workflow | Trigger | What it does |
 |----------|---------|--------------|
 | `ci.yml` | push to `main`, pull requests | gofmt check, `go vet`, `go test -race`; cross-builds all 8 architectures; `goreleaser check` plus a snapshot build (packages uploaded as artifacts); multi-arch Docker build |
-| `release.yml` | tag `v*` | tests, then GoReleaser publishes the GitHub Release (tar.gz, .deb, .rpm, .apk, Arch package, checksums, changelog); pushes a multi-arch image to `ghcr.io/<owner>/proctab` |
+| `release.yml` | tag `v*` | tests, then GoReleaser publishes the GitHub Release (tar.gz, .deb, .rpm, .apk, Arch package, checksums, changelog); pushes a multi-arch image to `ghcr.io/human-stuff/proctab`; rebuilds the GitHub Pages site with the signed APT repo and pip index; optionally publishes to PyPI |
+
+One-time setup before the first release (repo admin, needs `gh`):
+
+```sh
+./packaging/setup-signing-key.sh   # APT signing key -> APT_GPG_PRIVATE_KEY secret, enables Pages
+```
+
+For `pip install proctab` straight from PyPI:
+1. Add a trusted publisher on pypi.org (workflow `release.yml`, environment `pypi`).
+2. Set the repository variable `PUBLISH_PYPI=true`.
 
 Dependabot keeps Go modules and the actions up to date.
 

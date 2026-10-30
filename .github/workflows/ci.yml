@@ -68,6 +68,16 @@ jobs:
           distribution: goreleaser
           version: "~> v2"
           args: release --snapshot --clean
+      - name: build wheels + apt/pip site (unsigned)
+        run: |
+          python3 packaging/build_wheels.py --version v0.0.0-next --dist dist --out wheels
+          bash packaging/build_site.sh dist wheels site
+      - name: pip install from the built index
+        run: |
+          (cd site && python3 -m http.server 8765 &) && sleep 1
+          python3 -m venv /tmp/venv
+          /tmp/venv/bin/pip install proctab --index-url http://localhost:8765/simple/
+          /tmp/venv/bin/proctab -v
       - uses: actions/upload-artifact@v4
         with:
           name: snapshot-packages
@@ -78,6 +88,7 @@ jobs:
             dist/*.apk
             dist/*.pkg.tar.zst
             dist/checksums.txt
+            wheels/*.whl
           retention-days: 7
 
   docker:

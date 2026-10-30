@@ -15,7 +15,7 @@ builds:
     env: [CGO_ENABLED=0]
     goos: [linux]
     goarch: [amd64, arm64, arm, "386", riscv64, ppc64le, s390x, loong64]
-    goarm: ["6", "7"]
+    goarm: ["7"] # armhf; v6 would collide with v7 in .deb naming
     flags: [-trimpath]
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
