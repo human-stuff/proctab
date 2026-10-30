@@ -110,6 +110,8 @@ tar xzf proctab_<version>_linux_amd64.tar.gz && sudo install proctab /usr/local/
 
 # With Go
 go install github.com/human-stuff/proctab/cmd/proctab@latest
+# installs to ~/go/bin; add it to PATH if needed:
+#   echo 'export PATH="$PATH:$HOME/go/bin"' >> ~/.bashrc && source ~/.bashrc
 
 # From source
 make build && sudo make install

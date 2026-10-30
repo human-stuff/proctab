@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -32,6 +33,12 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+	if version == "dev" {
+		// `go install ...@vX.Y.Z` doesn't pass -ldflags, but records the module version.
+		if bi, ok := debug.ReadBuildInfo(); ok && bi.Main.Version != "" && bi.Main.Version != "(devel)" {
+			version = bi.Main.Version
+		}
+	}
 	if *showVer {
 		fmt.Printf("%s %s (%s/%s)", appName, version, runtime.GOOS, runtime.GOARCH)
 		if commit != "" {
