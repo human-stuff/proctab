@@ -11,10 +11,10 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 
-	"proctab/internal/docker"
-	"proctab/internal/netstat"
-	"proctab/internal/proc"
-	"proctab/internal/sysinfo"
+	"github.com/human-stuff/proctab/internal/docker"
+	"github.com/human-stuff/proctab/internal/netstat"
+	"github.com/human-stuff/proctab/internal/proc"
+	"github.com/human-stuff/proctab/internal/sysinfo"
 )
 
 type tab int32

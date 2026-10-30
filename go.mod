@@ -1,4 +1,4 @@
-module proctab
+module github.com/human-stuff/proctab
 
 go 1.24.0
 

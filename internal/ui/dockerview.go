@@ -7,7 +7,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 
-	"proctab/internal/docker"
+	"github.com/human-stuff/proctab/internal/docker"
 )
 
 type dockerView struct {

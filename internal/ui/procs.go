@@ -12,7 +12,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 
-	"proctab/internal/proc"
+	"github.com/human-stuff/proctab/internal/proc"
 )
 
 type procCol struct {

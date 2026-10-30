@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"proctab/internal/ui"
+	"github.com/human-stuff/proctab/internal/ui"
 )
 
 // Set at build time: -ldflags "-X main.version=v0.1.0 -X main.commit=... -X main.date=..."
