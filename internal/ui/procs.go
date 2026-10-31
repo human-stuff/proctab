@@ -162,7 +162,7 @@ func (v *procView) render() {
 		if c == v.sortCol && !v.tree {
 			st = colSelect.Bold(true)
 		}
-		cell := tview.NewTableCell(name).SetStyle(st).SetSelectable(false)
+		cell := tview.NewTableCell(name).SetStyle(st).SetTransparency(false).SetSelectable(false)
 		if col.right {
 			cell.SetAlign(tview.AlignRight)
 		}

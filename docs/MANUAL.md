@@ -3,7 +3,8 @@
 This manual explains every screen of proctab and how to read it. The
 screenshots come from a small demo machine running nginx, redis, an SSH
 server, dnsmasq and a few Docker containers. `scripts/screenshots/capture.sh`
-regenerates them.
+regenerates them. PNG copies of every screenshot (2576×1528) are in
+[`docs/png/`](png/), for slides, blog posts and social media.
 
 - [The screen layout](#the-screen-layout)
 - [Header meters](#header-meters)

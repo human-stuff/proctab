@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Regenerate docs/screenshots/*.svg from a clean demo environment.
-# Needs docker, tmux and python3.   usage: scripts/screenshots/capture.sh
+# Regenerate docs/screenshots/*.svg and docs/png/*.png from a clean demo
+# environment. Needs docker, tmux, python3 and Pillow (PNG step).   usage: scripts/screenshots/capture.sh
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 out=docs/screenshots
@@ -8,7 +8,8 @@ mkdir -p "$out"
 S=shot
 names="demo-web demo-cache demo-api demo-old proctab-demo"
 
-docker build -q -f scripts/screenshots/Dockerfile -t proctab-demo . >/dev/null
+version=$(git describe --tags --abbrev=0 2>/dev/null || echo dev)
+docker build -q --build-arg VERSION="$version" -f scripts/screenshots/Dockerfile -t proctab-demo . >/dev/null
 docker rm -f $names >/dev/null 2>&1 || true
 docker run -d --name demo-web -p 127.0.0.1:18080:80 proctab-demo web >/dev/null
 docker run -d --name demo-cache proctab-demo cache >/dev/null
@@ -44,3 +45,5 @@ shot container "proctab — Docker → Enter on demo-web" 2.5
 keys Escape 4
 shot system "proctab — System" 2.5
 keys F1; shot help "proctab — Help (F1)"
+
+python3 scripts/screenshots/svg2png.py docs/png "$out"/*.svg

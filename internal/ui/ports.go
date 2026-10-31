@@ -242,7 +242,7 @@ func (v *portsView) render() {
 		hdr = []string{"PROTO", "PORT", "ADDRESS", "SERVICE", "PID", "USER", "PROCESS", "CONTAINER", "COMMAND"}
 	}
 	for c, h := range hdr {
-		cell := tview.NewTableCell(h).SetStyle(colHeader).SetSelectable(false)
+		cell := tview.NewTableCell(h).SetStyle(colHeader).SetTransparency(false).SetSelectable(false)
 		if c == len(hdr)-1 {
 			cell.SetExpansion(1)
 		}
