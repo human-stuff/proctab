@@ -19,14 +19,14 @@ and its keys, and extended them with ports and Docker:
 
 If you know htop, you already know how to use proctab. Here is what it adds:
 
-| | htop | proctab |
+| | htop 3.5 | proctab |
 |---|---|---|
 | Processes, tree, sort, search, filter, kill, renice | ✔ | ✔ |
-| Listening ports with the owning PID, user and command | via external `lsof` | ✔ built in |
-| Status of well-known services (ssh, nginx, mysql, postgres, redis, …) | – | ✔ green / yellow / red |
-| Docker containers: state, CPU, memory, ports, inspect, processes | – | ✔ |
-| System page: OS, disks, network rates, summary | – | ✔ |
-| One drill-down view for ports, processes and containers, with history | – | ✔ |
+| Listening ports with the owning PID, user and command | no port list; `l` runs `lsof` for one process at a time | ✔ every listening socket in one table |
+| Status of well-known services (ssh, nginx, mysql, postgres, redis, …) | a systemd meter counts unit states | ✔ green / yellow / red per service |
+| Docker containers | a column shows which container a process is in | ✔ container list with state, CPU, memory, ports, inspect, processes |
+| System info | Network I/O and Disk I/O rate meters | ✔ full page: OS, kernel, disk space, per-interface rates, summary |
+| Process details | separate screens: environment (`e`), open files (`l`), command (`w`), locks (`x`) | ✔ one detail view for ports, processes and containers, with history |
 
 proctab is an independent project, written from scratch in Go. It contains
 no htop code and isn't affiliated with the htop project. See

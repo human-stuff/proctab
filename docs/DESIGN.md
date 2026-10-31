@@ -6,7 +6,7 @@ This file records the research behind the project and the decisions taken.
 
 | Tool | What it does well | What it lacks for us |
 |------|-------------------|----------------------|
-| htop | Processes, meters, F-key UX | Ports and containers only through external `lsof` |
+| htop | Processes, meters, F-key UX; a column shows which container a process is in | No port list (`l` runs `lsof` for one process); no container list or Docker stats |
 | btop, bottom, gotop, zenith | Graphs, widgets | No socket→PID view, no Docker |
 | glances | Docker plugin, web mode | Needs a Python runtime; no drill-down |
 | ctop, lazydocker | Containers | No host processes or ports |
