@@ -2,3 +2,6 @@ bin/
 dist/
 *.test
 *.out
+
+# local notes, never publish
+prompt.md
