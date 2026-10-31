@@ -5,6 +5,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/human-stuff/proctab/internal/proc"
 )
 
 func isRoot() bool { return os.Geteuid() == 0 }
@@ -28,9 +30,9 @@ func (a *App) renderSystem() {
 	kv(&b, "Kernel", esc(st.Kernel)+"  ("+st.Arch+")")
 	kv(&b, "Uptime", dur(s.Uptime))
 	kv(&b, "Booted", time.Now().Add(-s.Uptime).Format("2006-01-02 15:04:05"))
-	user := os.Getenv("USER")
+	user := proc.Users().Name(os.Geteuid())
 	if isRoot() {
-		user += " [green](root: full visibility)[-]"
+		user += " [green](root)[-]"
 	} else {
 		user += " [yellow](non-root: other users' sockets/cwd hidden)[-]"
 	}

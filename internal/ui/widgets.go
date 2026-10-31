@@ -125,7 +125,7 @@ func (c *clickBar) Draw(screen tcell.Screen) {
 			put(" ", tcell.StyleDefault.Background(tcell.ColorBlue))
 		} else {
 			put(it.key, keyStyle)
-			put(pad(it.label, 6), lblStyle)
+			put(pad(it.label, max(6, len([]rune(it.label))+1)), lblStyle)
 		}
 		c.spans = append(c.spans, [2]int{start, cx})
 	}

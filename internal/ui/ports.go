@@ -178,7 +178,7 @@ func (v *portsView) render() {
 			}
 			txt, col = "● "+s.svc.Name+" :"+strings.Join(ps, ","), colOK
 		case svcRunning:
-			txt, col = "◐ "+s.svc.Name+" (no port)", colWarn
+			txt, col = "◐ "+s.svc.Name+" (idle)", colWarn
 		default:
 			txt, col = "○ "+s.svc.Name, colBad
 		}

@@ -34,6 +34,9 @@ type entry struct {
 	top      *docker.Top
 	err      string
 	fetching bool
+
+	listSel  int  // remembered selection in the related list
+	hadJumps bool // list had selectable rows on the last render
 }
 
 type jump struct {
@@ -48,6 +51,7 @@ type detailView struct {
 	text    *tview.TextView
 	list    *tview.Table
 	stack   []*entry
+	shown   *entry
 	jumps   []jump
 	showEnv bool
 }
@@ -95,9 +99,6 @@ func (v *detailView) push(e *entry) {
 	v.a.pages.SwitchToPage("detail")
 	v.text.ScrollToBeginning()
 	v.a.app.SetFocus(v.text)
-	if len(v.jumps) > 0 {
-		v.list.Select(0, 0)
-	}
 	v.refresh()
 	v.a.renderFooter()
 }
@@ -198,15 +199,26 @@ func (v *detailView) refresh() {
 	v.text.SetText(b.String())
 	v.text.ScrollTo(row, col)
 
-	sel, _ := v.list.GetSelection()
+	// Each entry remembers its own list position, so going back or a
+	// late async load never shows another entry's scroll offset.
+	if v.shown != nil && v.shown.hadJumps {
+		v.shown.listSel, _ = v.list.GetSelection()
+	}
+	v.shown = e
+	e.hadJumps = len(v.jumps) > 0
 	v.list.Clear()
 	for i, j := range v.jumps {
 		v.list.SetCell(i, 0, tview.NewTableCell(" "+j.label).SetExpansion(1))
 	}
 	if len(v.jumps) == 0 {
 		v.list.SetCell(0, 0, tview.NewTableCell(" (nothing related)").SetTextColor(colDim).SetSelectable(false))
+		v.list.SetOffset(0, 0)
 	} else {
-		v.list.Select(min(sel, len(v.jumps)-1), 0)
+		sel := min(e.listSel, len(v.jumps)-1)
+		if sel == 0 {
+			v.list.SetOffset(0, 0)
+		}
+		v.list.Select(sel, 0)
 	}
 }
 

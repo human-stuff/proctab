@@ -674,7 +674,7 @@ func helpText(name, version string) string {
 
  [teal]Ports[-]
    [white::b]F5 a[-::-]  toggle listening / all sockets   [white::b]s[-::-] focus service grid (Enter filters by service)
-   Service colours: [green]● listening[-]   [yellow]◐ process running, no port[-]   [red]○ not running[-]
+   Service colours: [green]● listening[-]   [yellow]◐ idle: process running, no port[-]   [red]○ not running[-]
 
  [teal]Docker[-]
    [white::b]F5 a[-::-]  toggle all / running containers   Enter shows inspect + processes (open host PID)
