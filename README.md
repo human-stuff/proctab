@@ -32,48 +32,6 @@ proctab is an independent project, written from scratch in Go. It contains
 no htop code and isn't affiliated with the htop project. See
 [Credits](#credits-and-references).
 
-## A quick tour
-
-| | |
-|---|---|
-| ![Processes](docs/screenshots/processes.svg) **Processes:** the htop list: columns, colours, tree view (`F5`), sorting, kill. | ![Port detail](docs/screenshots/port-detail.svg) **Enter on a port:** PID, parent, user, start time, full command, executable, working directory, sockets, children. |
-| ![Docker](docs/screenshots/docker.svg) **Docker:** every container with state, CPU%, memory and published ports. | ![System](docs/screenshots/system.svg) **System:** OS, kernel, CPU, memory, disks, network interfaces. |
-
-**[Read the manual](docs/MANUAL.md)** for how to read every screen, column
-and colour, plus all keys and permissions.
-
-## Features
-
-- **Processes:**
-  - htop columns (PID USER PRI NI VIRT RES SHR S CPU% MEM% TIME+ Command)
-  - tree view, sort, search, filter
-  - kill with a chosen signal, renice
-- **Ports:**
-  - status grid of well-known services: green = listening, yellow = running
-    without a port, red = down
-  - every listening TCP/UDP socket with its owning PID, process, container
-    and command
-  - `a` shows all sockets, including established connections
-- **Docker:**
-  - every container with state, CPU%, memory and ports
-  - Enter shows the inspect data (command, entrypoint, workdir, mounts,
-    networks, ports, env) and the container's processes, opened by host PID
-- **System:**
-  - OS, kernel, uptime, CPU, load
-  - memory and swap meters
-  - disks with usage bars
-  - network interfaces with RX/TX rates
-- **Drill-down everywhere:**
-  - Enter on any port, process or container opens one detail view
-  - Related items (parent, children, container, the container's processes)
-    open in turn
-  - Esc walks back
-- **Lightweight:**
-  - reads `/proc` directly and talks to the Docker socket directly; no
-    gopsutil, no Docker SDK
-  - about 3% of one core and 17 MB of memory with 400 processes
-- **Mouse:** click tabs, F-keys, column headers and services; double-click
-  opens.
 
 ## Install
 
@@ -132,6 +90,49 @@ docker run --rm -it --pid=host --net=host --cap-add SYS_PTRACE \
 ```
 
 Linux only for now; it needs `/proc`.
+
+## A quick tour
+
+| | |
+|---|---|
+| ![Processes](docs/screenshots/processes.svg) **Processes:** the htop list: columns, colours, tree view (`F5`), sorting, kill. | ![Port detail](docs/screenshots/port-detail.svg) **Enter on a port:** PID, parent, user, start time, full command, executable, working directory, sockets, children. |
+| ![Docker](docs/screenshots/docker.svg) **Docker:** every container with state, CPU%, memory and published ports. | ![System](docs/screenshots/system.svg) **System:** OS, kernel, CPU, memory, disks, network interfaces. |
+
+**[Read the manual](docs/MANUAL.md)** for how to read every screen, column
+and colour, plus all keys and permissions.
+
+## Features
+
+- **Processes:**
+  - htop columns (PID USER PRI NI VIRT RES SHR S CPU% MEM% TIME+ Command)
+  - tree view, sort, search, filter
+  - kill with a chosen signal, renice
+- **Ports:**
+  - status grid of well-known services: green = listening, yellow = running
+    without a port, red = down
+  - every listening TCP/UDP socket with its owning PID, process, container
+    and command
+  - `a` shows all sockets, including established connections
+- **Docker:**
+  - every container with state, CPU%, memory and ports
+  - Enter shows the inspect data (command, entrypoint, workdir, mounts,
+    networks, ports, env) and the container's processes, opened by host PID
+- **System:**
+  - OS, kernel, uptime, CPU, load
+  - memory and swap meters
+  - disks with usage bars
+  - network interfaces with RX/TX rates
+- **Drill-down everywhere:**
+  - Enter on any port, process or container opens one detail view
+  - Related items (parent, children, container, the container's processes)
+    open in turn
+  - Esc walks back
+- **Lightweight:**
+  - reads `/proc` directly and talks to the Docker socket directly; no
+    gopsutil, no Docker SDK
+  - about 3% of one core and 17 MB of memory with 400 processes
+- **Mouse:** click tabs, F-keys, column headers and services; double-click
+  opens.
 
 ## Usage
 
